@@ -36,6 +36,9 @@ int main(int argc, char const *argv[])
 		return -1; 
 	}
     
+    valread = read(sock , read_buffer, buffer_size); 
+    printf("%s\n", read_buffer);
+
     while(1){
         // send(sock , hello , strlen(hello) , 0 ); 
         // printf("Hello message sent\n"); 
