@@ -5,6 +5,12 @@
         "iostream": "cpp",
         "ostream": "cpp",
         "fstream": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "istream": "c",
+        "limits": "c",
+        "sstream": "c",
+        "streambuf": "c",
+        "exception": "c",
+        "new": "c"
     }
 }
