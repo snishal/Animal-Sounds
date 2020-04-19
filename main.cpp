@@ -1,4 +1,4 @@
-#include<iostream>
+#include<bits/stdc++.h>
 #include "LRU.h"
 #include "BST.h"
 using namespace std;
@@ -17,41 +17,42 @@ void createFile(){
 int main(){
 
     // createFile();
-    
+
     BST tree;
-    tree.insert("dog", "woo");
-    tree.insert("cat", "meow");
-    tree.insert("tap", "meow");
-    tree.insert("bat", "meow");
-    tree.insert("xyz", "meow");
+    tree.insert("DOG", "WOOF");
+    tree.insert("CAT", "MEOW");
+    tree.insert("SNAKE", "HISS");
+    tree.insert("PIG", "GRUNT");
+    tree.insert("HORSE", "NEIGHS");
+    tree.insert("DOG", "MEOW");
     
     tree.inorder();
 
-    // cout << tree.search("dog") << endl;
-    // cout << tree.search("hap") << endl;
-    // cout << tree.search("tap") << endl;
+    cout << tree.search("dog") << endl;
+    cout << tree.search("hap") << endl;
+    cout << tree.search("tap") << endl;
     
-    // tree.deleteKey("tap");
-    // tree.inorder();
+    tree.deleteKey("tap");
+    tree.inorder();
 
-    // tree.deleteKey("dog");
-    // tree.deleteKey("tap");
-    // tree.inorder();
+    tree.deleteKey("dog");
+    tree.deleteKey("tap");
+    tree.inorder();
     
-    // LRU cache(3);
+    LRU cache(3);
 
-    // cout << cache.search("dog") << endl;
+    cout << cache.search("dog") << endl;
     
-    // cache.add("dog", "woo");
-    // cache.add("cat", "meow");
-    // cache.add("bat", "moo");
+    cache.add("dog", "woo");
+    cache.add("cat", "meow");
+    cache.add("bat", "moo");
 
-    // cout << cache.search("dog") << endl;
+    cout << cache.search("dog") << endl;
 
-    // cache.add("cow", "moo");
+    cache.add("cow", "moo");
 
-    // cout << cache.search("cow") << endl;
-    // cout << cache.search("dog") << endl;
+    cout << cache.search("cow") << endl;
+    cout << cache.search("dog") << endl;
 
     return 0;
 }

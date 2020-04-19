@@ -23,7 +23,7 @@ private:
     BSTNode* root;
 
     BSTNode* readNode(int pos){
-        if(pos == -1){
+        if(pos < 0){
             return nullptr;
         }
 
@@ -82,15 +82,16 @@ private:
     }
 
     bool isLeaf(BSTNode* node){
-        return node->left == -1 && node->right == -1;
+        return node->left < 0 && node->right < 0;
     }
 
-    void inorder(int nodePos){
+    void inorder(int nodePos, vector<string>& traversal){
         BSTNode *node = readNode(nodePos);
         if(node != nullptr){
-            inorder(node->left);
-            viewNode(node);
-            inorder(node->right);
+            inorder(node->left, traversal);
+            // viewNode(node);
+            traversal.emplace_back(node->key);
+            inorder(node->right, traversal);
         }
     }
 public:
@@ -98,11 +99,10 @@ public:
         // first node keeps the address of root
         file = _file;
         root = readNode(0);
-        cout << root->left << endl;
     }
 
     void insert(string key, string val){
-        if(root->left == -1){//BST is empty
+        if(root->left < 0){//BST is empty
             BSTNode *node = new BSTNode(key, val);
 
             root->left = writeNode(node);
@@ -133,7 +133,8 @@ public:
             }
             updateNode(parentPos, parent);
         }else{
-            cout << key << " already present in BST" << endl;
+            strcpy(node->val, val.c_str());
+            updateNode(nodePos, node);
         }
     }
 
@@ -169,7 +170,7 @@ public:
                 else if(nodePos == parent->left)parent->left = -1;
                 else if(nodePos == parent->right)parent->right = -1;
             }else{
-                if(node->left != -1){
+                if(node->left >= 0){
                     if(parentPos == 0)root->left = node->left;
                     else if(nodePos == parent->left)parent->left = node->left;
                     else if(nodePos == parent->right)parent->right = node->left;
@@ -177,7 +178,7 @@ public:
                     int leftRightMostPos = node->left;
                     BSTNode* leftRightMost = readNode(leftRightMostPos);
                     
-                    while(leftRightMost->right != -1){
+                    while(leftRightMost->right >= 0){
                         leftRightMostPos = leftRightMost->right;
                         leftRightMost = readNode(leftRightMostPos);
                     }
@@ -198,9 +199,9 @@ public:
         }
     }
 
-    void inorder(){
-        cout << "Inorder : ";
-        inorder(root->left);
-        cout << endl;
+    vector<string> inorder(){
+        vector<string> traversal;
+        inorder(root->left, traversal);
+        return traversal;
     }
 };
