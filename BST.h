@@ -1,5 +1,6 @@
 #include<fstream>
 #include<string.h>
+#include<iostream>
 using namespace std;
 
 struct BSTNode
@@ -97,6 +98,7 @@ public:
         // first node keeps the address of root
         file = _file;
         root = readNode(0);
+        cout << root->left << endl;
     }
 
     void insert(string key, string val){

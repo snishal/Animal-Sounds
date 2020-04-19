@@ -10,10 +10,11 @@
 
 int main(int argc, char const *argv[]) 
 { 
+    bool down = false, loggedIn = false;
 	int sock = 0, valread; 
 	struct sockaddr_in serv_addr; 
 	// char *hello = "Hello from client"; 
-	char read_buffer[buffer_size] = {0}, write_buffer[buffer_size];
+	char read_buffer[buffer_size], write_buffer[buffer_size];
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
 	{ 
@@ -35,66 +36,65 @@ int main(int argc, char const *argv[])
 		printf("\nConnection Failed \n"); 
 		return -1; 
 	}
-    
-    valread = read(sock , read_buffer, buffer_size); 
-    printf("%s\n", read_buffer);
 
     while(1){
-        // send(sock , hello , strlen(hello) , 0 ); 
-        // printf("Hello message sent\n"); 
-        // valread = read(sock , buffer, buffer_size); 
-        // printf("%s\n", buffer);
-        bzero(write_buffer, sizeof(buffer_size));
-        std::cin >> write_buffer;
+        bzero(write_buffer, buffer_size);
+		bzero(read_buffer, buffer_size);
 
-        if(strcasecmp("SOUND", write_buffer) == 0){
-            send(sock , write_buffer , strlen(write_buffer) , 0); 
-            printf("Waiting for Reply...\n"); 
-            valread = read(sock , read_buffer, buffer_size); 
-            printf("%s\n", read_buffer);
+        valread = read(sock , read_buffer, buffer_size); 
+        std::cout << read_buffer << std::endl;
+        
+        if(strcasecmp("Logged In \r\n", read_buffer) == 0){
+            loggedIn = true;
+        }
 
-            printf("Animal Name: ");
-            bzero(write_buffer, sizeof(buffer_size));
-            std::cin >> write_buffer;
-            
-            send(sock , write_buffer , strlen(write_buffer) , 0); 
-            printf("Waiting for Reply...\n"); 
-            valread = read(sock , read_buffer, buffer_size); 
-            printf("%s\n", read_buffer);
-        }else if(strcasecmp("STORE", write_buffer) == 0){
-            send(sock , write_buffer , strlen(write_buffer) , 0); 
-            printf("Waiting for Reply...\n"); 
-            valread = read(sock , read_buffer, buffer_size); 
-            printf("%s\n", read_buffer);
+        if(down){
+            exit(0);
+        }
 
-            printf("Animal Name: ");
-            bzero(write_buffer, sizeof(buffer_size));
-            std::cin >> write_buffer;
-            
-            send(sock , write_buffer , strlen(write_buffer) , 0); 
-            printf("Waiting for Reply...\n"); 
-            valread = read(sock , read_buffer, buffer_size); 
-            printf("%s\n", read_buffer);
+        if(!loggedIn){
+            char user[1024], pass[1024];
+            std::cout << "Username: ";
+            std::cin >> user;
+            std::cout << "Password: ";
+            std::cin >> pass;
 
-            printf("Animal Sound: ");
-            bzero(write_buffer, sizeof(buffer_size));
-            std::cin >> write_buffer;
-            
-            send(sock , write_buffer , strlen(write_buffer) , 0);
-            printf("Waiting for Reply...\n"); 
-            valread = read(sock , read_buffer, buffer_size); 
-            printf("%s\n", read_buffer);
-        }else if(strcasecmp("QUERY", write_buffer) == 0){
-            send(sock , write_buffer , strlen(write_buffer) , 0); 
-            printf("Waiting for Reply...\n"); 
-            valread = read(sock , read_buffer, buffer_size); 
-            printf("%s\n", read_buffer);
-        }else if(strcasecmp("BYE", write_buffer) == 0){
-            // End Session
-        }else if(strcasecmp("END", write_buffer) == 0){
-            // Terminate Connection
+            strcat(write_buffer, user);
+            strcat(write_buffer, "\n");
+            strcat(write_buffer, pass);
+
+            write(sock, write_buffer, strlen(write_buffer));
         }else{
-            //UNKOWN REQUEST
+            std::cin >> write_buffer;
+
+            if(strcasecmp("SOUND", write_buffer) == 0){
+                write(sock , write_buffer , strlen(write_buffer)); 
+            }else if(strcasecmp("STORE", write_buffer) == 0){
+                char animal_name[1024], animal_sound[1024];
+                std::cin >> animal_name;
+                std::cin >> animal_sound;
+
+                strcat(write_buffer, "\n");
+                strcat(write_buffer, animal_name);
+                strcat(write_buffer, "\n");
+                strcat(write_buffer, animal_sound);
+
+                std::cout << write_buffer;
+
+                write(sock , write_buffer , strlen(write_buffer)); 
+            }else if(strcasecmp("QUERY", write_buffer) == 0){
+                write(sock , write_buffer , strlen(write_buffer));
+            }else if(strcasecmp("BYE", write_buffer) == 0){
+                write(sock, write_buffer, strlen(write_buffer));
+                shutdown(sock, SHUT_WR);
+                down = true;
+            }else if(strcasecmp("END", write_buffer) == 0){
+                write(sock, write_buffer, strlen(write_buffer));
+                shutdown(sock, SHUT_WR);
+                down = true;
+            }else{
+                write(sock , write_buffer , strlen(write_buffer)); 
+            }
         }
     }
 	return 0; 
