@@ -220,14 +220,17 @@ int main(int argc , char *argv[])
 
 					strcpy(write_buffer, "STORE : OK \r\n");
 					write(sd , write_buffer , strlen(write_buffer)); 
+					action = 2;
 				}else if(strcasecmp("QUERY", read_buffer) == 0){
-					for(const auto& animal : tree.inorder()){
+					std::vector<std::string> animals = tree.inorder();
+					for(const string& animal : animals){
 						strcpy(write_buffer, animal.c_str());
 						strcat(write_buffer, "\n");
 						write(sd, write_buffer, strlen(write_buffer));
 					}
 					strcpy(write_buffer, "QUERY : OK \r\n");
 					write(sd , write_buffer , strlen(write_buffer));
+					action = 3;
 				}else if(strcasecmp("BYE", read_buffer) == 0){
 					strcpy(write_buffer, "BYE : OK \r\n");
 					write(sd , write_buffer , strlen(write_buffer));
@@ -236,15 +239,18 @@ int main(int argc , char *argv[])
 					close(sd); 
 					client_socket[i] = 0;
 					client_logged_in[i] = false;
+					action = 4;
 				}else if(strcasecmp("END", read_buffer) == 0){
 					for(i = 0; i < max_clients; i++){
-						strcpy(write_buffer, "END : OK \r\n");
-						write(sd , write_buffer , strlen(write_buffer));
+						if(client_socket[i] != 0){
+							strcpy(write_buffer, "END : OK \r\n");
+							write(sd , write_buffer , strlen(write_buffer));
 
-						printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr) , ntohs(address.sin_port)); 
-						close(sd); 
-						client_socket[i] = 0;
-						client_logged_in[i] = false;
+							printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr) , ntohs(address.sin_port)); 
+							close(sd); 
+							client_socket[i] = 0;
+							client_logged_in[i] = false;
+						}
 					}
 					exit(0);
 				}

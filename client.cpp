@@ -79,8 +79,6 @@ int main(int argc, char const *argv[])
                 strcat(write_buffer, "\n");
                 strcat(write_buffer, animal_sound);
 
-                std::cout << write_buffer;
-
                 write(sock , write_buffer , strlen(write_buffer)); 
             }else if(strcasecmp("QUERY", write_buffer) == 0){
                 write(sock , write_buffer , strlen(write_buffer));
